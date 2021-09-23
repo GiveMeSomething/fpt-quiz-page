@@ -1,0 +1,39 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "main.ts",
+  "license": "MIT",
+  "scripts": {
+    "start:dev": "node ./src/app.js",
+    "lint": "eslint --cache --ext .js",
+    "format": "prettier --write \"**/*.js\"",
+    "lint:staged": "yarn lint-staged"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "prettier": "^2.4.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "lint-staged": "^11.1.2"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  },
+  "lint-staged": {
+    "*.{js, json, ts}": [
+      "yarn format",
+      "yarn lint",
+      "git add ."
+    ]
+  }
+}
