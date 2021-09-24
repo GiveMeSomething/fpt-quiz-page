@@ -10,6 +10,7 @@
     "lint:staged": "yarn lint-staged"
   },
   "dependencies": {
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "prettier": "^2.4.1"
   },
