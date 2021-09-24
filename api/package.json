@@ -4,29 +4,38 @@
   "main": "main.ts",
   "license": "MIT",
   "scripts": {
-    "start:dev": "node ./src/app.js",
-    "lint": "eslint --cache --ext .js",
-    "format": "prettier --write \"**/*.js\"",
+    "start:dev": "nodemon ./src/app.ts",
+    "lint": "eslint --cache --ext .js,.ts",
+    "format": "prettier --write \"**/*.ts\"",
     "lint:staged": "yarn lint-staged"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "prettier": "^2.4.1"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.7",
+    "prettier": "^2.4.1",
+    "reflect-metadata": "^0.1.13",
+    "typedi": "^0.10.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^16.9.6",
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
-    "lint-staged": "^11.1.2"
+    "lint-staged": "^11.1.2",
+    "nodemon": "^2.0.13",
+    "ts-node": "^10.2.1"
   },
   "prettier": {
     "semi": true,
     "singleQuote": true,
     "trailingComma": "all",
-    "tabWidth": 2,
+    "tabWidth": 4,
     "arrowParens": "always",
     "endOfLine": "lf"
   },
