@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import express from 'express';
 import { Service } from 'typedi';
-
 import AuthService from '../services/auth/auth.service';
+import { IUser } from '../models/user';
 
 @Service()
 export default class AuthRouter {
@@ -15,9 +15,16 @@ export default class AuthRouter {
     route() {
         const router = express.Router();
 
-        router.post('/register', async (req, res) => {
-            const user = await this.authService.isDuplicate('something');
-            res.send(user);
+        router.post('/register', async (req, res, next) => {
+            // Will try something more specific than this
+            const user: IUser = { ...req.body };
+
+            try {
+                const result = await this.authService.register(user);
+                res.send(result);
+            } catch (error) {
+                next(error);
+            }
         });
 
         return router;

@@ -1,17 +1,19 @@
 import 'reflect-metadata';
 import { Service } from 'typedi';
-import AuthRepository from './auth.repository';
+import { IUser } from '../../models/user';
+import UserService from '../user/user.service';
 
 @Service()
 export default class AuthService {
-    private readonly authRepository: AuthRepository;
+    private readonly userService: UserService;
 
-    constructor(authRepository: AuthRepository) {
-        this.authRepository = authRepository;
+    constructor(userService: UserService) {
+        this.userService = userService;
     }
 
-    async isDuplicate(uniqueValue: any) {
-        const result = await this.authRepository.isDuplicate(uniqueValue);
+    async register(user: IUser) {
+        const result = await this.userService.create(user);
+
         return result;
     }
 }
