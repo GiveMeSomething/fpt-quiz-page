@@ -10,6 +10,9 @@ export default class ErrorHandler extends Error {
 
 export const handleError = (err: any, res: any) => {
     const { statusCode = 500, message } = err;
+    if (!message) {
+        message = `Oops! Something is wrong with the server, details: ${err}`;
+    }
     res.status(statusCode).json({
         status: 'error',
         statusCode,

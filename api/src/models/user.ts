@@ -18,7 +18,7 @@ export const UserSchema: Schema<User> = new Schema<User>(
             type: String,
         },
     },
-    { timestamps: true },
+    { timestamps: true }
 );
 
 UserSchema.pre('save', async function preSave(next: any) {

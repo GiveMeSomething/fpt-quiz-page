@@ -38,10 +38,11 @@
   "prettier": {
     "semi": true,
     "singleQuote": true,
-    "trailingComma": "all",
+    "trailingComma": "es5",
     "tabWidth": 4,
     "arrowParens": "always",
-    "endOfLine": "lf"
+    "endOfLine": "lf",
+    "printWidth": 120
   },
   "lint-staged": {
     "*.{js, json, ts}": [
