@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Service } from 'typedi';
-import { IUser } from '../../models/user';
+import { User } from '../../models/user';
 import UserService from '../user/user.service';
 
 @Service()
@@ -11,7 +11,7 @@ export default class AuthService {
         this.userService = userService;
     }
 
-    async register(user: IUser) {
+    async register(user: User) {
         const result = await this.userService.create(user);
 
         return result;

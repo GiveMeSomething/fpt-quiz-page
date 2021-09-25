@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import { Service } from 'typedi';
-import { IUser } from '../../models/user';
+import { User } from '../../models/user';
 import UserRepository from './user.repository';
+import { BadRequestException } from '../../utils/errorHandler/commonError';
 
 // Compose repository functions to provide services
 @Service()
@@ -12,9 +13,19 @@ export default class UserService {
         this.userRepository = userRepository;
     }
 
-    async create(user: IUser) {
-        // Sample
-        const result = await this.userRepository.create(user);
-        return result;
+    async create(user: User) {
+        // Check if user has already created (with input email)
+        const oldUser = await this.userRepository.findByEmail(user.email);
+        if (oldUser) {
+            throw BadRequestException('User existed. Please login.');
+        }
+
+        // Create new user
+        const newUser = await this.userRepository.create(user);
+
+        // Send verification email (optional)
+
+        // Return created user for other process
+        return newUser;
     }
 }
