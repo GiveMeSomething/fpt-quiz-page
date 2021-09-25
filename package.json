@@ -18,9 +18,9 @@
     "start": "yarn frontend:start && yarn api:start",
     "frontend:start": "yarn workspace frontend start:dev",
     "api:start": "yarn workspace api start:dev",
-    "lint": "yarn frontend:lint",
-    "frontend:lint": "yarn workspace frontend lint",
-    "api:lint" : "yarn workspace api lint",
+    "lint": "yarn frontend:lint && yarn api:lint",
+    "frontend:lint": "yarn workspace frontend lint && yarn workspace frontend format",
+    "api:lint" : "yarn workspace api lint && yarn workspace api format",
     "prepare": "husky install"
   }
 }
