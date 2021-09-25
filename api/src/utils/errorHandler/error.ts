@@ -9,7 +9,7 @@ export default class ErrorHandler extends Error {
 }
 
 export const handleError = (err: any, res: any) => {
-    const { statusCode, message } = err;
+    const { statusCode = 500, message } = err;
     res.status(statusCode).json({
         status: 'error',
         statusCode,

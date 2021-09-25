@@ -22,7 +22,8 @@
         ],
         "indent": "off",
         "@typescript-eslint/indent": ["error"],
-        "class-methods-use-this": "off"
+        "class-methods-use-this": "off",
+        "new-cap": "off"
     },
     "settings": {
         "import/resolver": {

@@ -1,8 +1,8 @@
 import { Document, model, ObjectId, Schema } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
+const SALT: number = 10;
 export interface IUser extends Document {
-    id: ObjectId;
-    username: string;
     email: string;
     password: string;
     token: string;
@@ -10,15 +10,6 @@ export interface IUser extends Document {
 
 export const UserSchema = new Schema<IUser>(
     {
-        id: {
-            type: Schema.Types.ObjectId,
-            required: true,
-        },
-        username: {
-            type: String,
-            required: true,
-            unique: true,
-        },
         email: {
             type: String,
             required: true,
@@ -31,8 +22,22 @@ export const UserSchema = new Schema<IUser>(
             type: String,
         },
     },
-    { collection: 'users' },
+    { timestamps: true },
 );
+
+UserSchema.pre('save', async function preSave(next: any) {
+    if (this.email) {
+        this.email = this.email.toLowerCase();
+    }
+    if (this.isModified('password')) {
+        try {
+            this.password = await bcrypt.hash(this.password, SALT);
+        } catch (err) {
+            next(err);
+        }
+    }
+    next();
+});
 
 const User = model<IUser>('User', UserSchema);
 export default User;
