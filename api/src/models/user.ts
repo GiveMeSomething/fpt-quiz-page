@@ -1,14 +1,13 @@
-import { Document, model, ObjectId, Schema } from 'mongoose';
+import { Document, Model, model, Schema } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 const SALT: number = 10;
 export interface IUser extends Document {
     email: string;
     password: string;
-    token: string;
 }
 
-export const UserSchema = new Schema<IUser>(
+export const UserSchema: Schema<IUser> = new Schema<IUser>(
     {
         email: {
             type: String,
@@ -16,9 +15,6 @@ export const UserSchema = new Schema<IUser>(
             unique: true,
         },
         password: {
-            type: String,
-        },
-        token: {
             type: String,
         },
     },
@@ -39,5 +35,5 @@ UserSchema.pre('save', async function preSave(next: any) {
     next();
 });
 
-const User = model<IUser>('User', UserSchema);
+const User: Model<IUser> = model<IUser>('User', UserSchema);
 export default User;
