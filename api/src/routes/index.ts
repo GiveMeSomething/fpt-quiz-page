@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
-import AuthRouter from './auth.route';
+import AuthRouter from '../services/auth/auth.controller';
 
 const authRouter: AuthRouter = Container.get(AuthRouter);
 
