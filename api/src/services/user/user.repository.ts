@@ -26,7 +26,7 @@ export default class UserRepository {
     }
 
     async findByEmail(email: string) {
-        const user = await this.userModel.find({ email });
+        const user = await this.userModel.findOne({ email });
         return user;
     }
 }
