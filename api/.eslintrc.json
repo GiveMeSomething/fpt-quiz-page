@@ -21,9 +21,18 @@
             }
         ],
         "indent": "off",
-        "@typescript-eslint/indent": ["error"],
+        "@typescript-eslint/indent": "off",
         "class-methods-use-this": "off",
-        "new-cap": "off"
+        "new-cap": "off",
+        "no-underscore-dangle": "off",
+        "no-console": "warn",
+        "prefer-const": ["error", { "destructuring": "all" }],
+        "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true, "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/no-empty-interface": "off"
     },
     "settings": {
         "import/resolver": {

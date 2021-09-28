@@ -1,9 +1,11 @@
-import { Model } from 'mongoose';
 import 'reflect-metadata';
+
+import { Model } from 'mongoose';
 import { Service } from 'typedi';
 
 import UserModel, { User } from '../../models/user';
 import ErrorHandler from '../../utils/errorHandler/error';
+import { Undefinable } from '../../@types/app.type';
 
 // Only write operation with database in here
 @Service()
@@ -25,8 +27,7 @@ export default class UserRepository {
         return createdUser;
     }
 
-    async findByEmail(email: string) {
-        const user = await this.userModel.findOne({ email });
-        return user;
+    async findByEmail(email: string): Promise<Undefinable<User>> {
+        return this.userModel.findOne({ email }).exec();
     }
 }
