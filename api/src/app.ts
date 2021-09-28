@@ -1,10 +1,13 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
+import * as path from 'path';
+import * as dotenv from 'dotenv';
 
 import route from './routes';
 import database from './config/database/database';
+
 import { handleError } from './utils/errorHandler/error';
 
-require('dotenv').config();
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 
@@ -17,8 +20,8 @@ route(app);
 // Connect to MongoDB or etc
 database.connectToDatabase();
 
-app.use((err: any, req: any, res: any, next: any) => {
-    handleError(err, res);
+app.use((err: any, req: Request, res: Response) => {
+    handleError(err, req, res);
 });
 
 app.listen(process.env.PORT, () => {
