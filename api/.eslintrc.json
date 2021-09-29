@@ -33,7 +33,8 @@
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true, "argsIgnorePattern": "^_" }],
         "@typescript-eslint/no-empty-interface": "off",
-        "object-curly-newline": "off"
+        "object-curly-newline": "off",
+        "max-len": ["error", { "code": 135 }]
     },
     "settings": {
         "import/resolver": {

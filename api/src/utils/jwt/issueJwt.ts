@@ -3,8 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { User } from '../../models/user';
 import { RefreshTokenPayload, AuthResponse } from '../../services/auth/auth.type';
 import { InternalServerException } from '../errorHandler/commonError';
-
-const currentTimestampInSecond = (): number => Math.floor(Date.now() / 1000);
+import { currentTimestampInSecond } from '../time';
 
 const issueToken = (payload: any, expiresIn: number | string): string => {
     const secret = process.env.SECRET_KEY;
@@ -37,7 +36,8 @@ export default function issueJwt(user: User): AuthResponse {
     };
 
     // Set expireTime to 15min (in ms)
-    const expiresIn = 15 * 60 * 1000;
+    // const expiresIn = 15 * 60 * 1000;
+    const expiresIn = 1000;
 
     const token = issueToken(payload, expiresIn);
 
