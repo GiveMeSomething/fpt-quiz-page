@@ -29,8 +29,8 @@ route(app);
 database.connectToDatabase();
 
 // Custom error handler
-app.use((err: any, req: Request, res: Response) => {
-    handleError(err, req, res);
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    handleError(err, req, res, next);
 });
 
 // Start the server at the port specify in env

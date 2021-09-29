@@ -32,14 +32,9 @@ export default class AuthController {
 
         router.post('/register', this.registerWithPassword);
         router.post('/login', this.login);
-        router.post('/testing', passport.authenticate('jwt', { session: false }), this.testUsingToken);
         router.post('/refresh_token', this.refreshToken);
 
         return router;
-    }
-
-    async testUsingToken(req: Request, res: Response) {
-        res.send('Hello World');
     }
 
     async registerWithPassword(req: Request, res: Response, next: NextFunction): Promise<void> {

@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 
-import * as jwt from 'jsonwebtoken';
-
 import { Service } from 'typedi';
-import { User } from '../../models/user';
-import UserService from '../user/user.service';
-import { AuthResponse } from './auth.type';
+
 import issueJwt from '../../utils/jwt/issueJwt';
+import UserService from '../user/user.service';
+
+import { User } from '../../models/user';
+import { AuthResponse } from './auth.type';
 
 @Service()
 export default class AuthService {

@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { nextTick } from 'process';
 
 export default class ErrorHandler extends Error {
     public statusCode: number;
@@ -16,7 +17,7 @@ export default class ErrorHandler extends Error {
     }
 }
 
-export function handleError(err: any, req: Request, res: Response): void {
+export function handleError(err: any, req: Request, res: Response, next: NextFunction): void {
     if (err instanceof ErrorHandler) {
         const { statusCode, statusName, source, message } = err;
 
@@ -29,6 +30,6 @@ export function handleError(err: any, req: Request, res: Response): void {
             message,
         });
     } else {
-        console.log(`Something is wrong over handleError, cause: ${err}`);
+        next(err);
     }
 }
