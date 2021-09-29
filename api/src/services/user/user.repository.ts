@@ -3,9 +3,9 @@ import 'reflect-metadata';
 import { Model } from 'mongoose';
 import { Service } from 'typedi';
 
-import UserModel, { User } from '../../models/user';
-import ErrorHandler from '../../utils/errorHandler/error';
+import { User, UserModel } from '../../models/user';
 import { Undefinable } from '../../@types/app.type';
+import { ServiceUnavailableException } from '../../utils/errorHandler/commonError';
 
 // Only write operation with database in here
 @Service()
@@ -21,7 +21,7 @@ export default class UserRepository {
         const createdUser = await initialUser.save();
 
         if (!createdUser) {
-            throw new ErrorHandler(503, 'Cannot create user');
+            throw ServiceUnavailableException('Cannot create new user');
         }
 
         return createdUser;

@@ -3,15 +3,18 @@ import 'reflect-metadata';
 import { NextFunction, Request, Response, Router } from 'express';
 import { Service } from 'typedi';
 
+import passport from 'passport';
 import AuthService from './auth.service';
 import UserService from '../user/user.service';
-
 import { User } from '../../models/user';
-import { AuthResponse } from './auth.type';
-import { BadRequestException, UnauthorizedException } from '../../utils/errorHandler/commonError';
+import {
+    BadRequestException,
+    NotImplementedException,
+    UnauthorizedException,
+} from '../../utils/errorHandler/commonError';
 
 @Service()
-export default class AuthRouter {
+export default class AuthController {
     private readonly authService: AuthService;
 
     private readonly userService: UserService;
@@ -29,11 +32,17 @@ export default class AuthRouter {
 
         router.post('/register', this.registerWithPassword);
         router.post('/login', this.login);
+        router.post('/testing', passport.authenticate('jwt', { session: false }), this.testUsingToken);
+        router.post('/refresh_token', this.refreshToken);
 
         return router;
     }
 
-    async registerWithPassword(req: Request, res: Response, next: NextFunction): Promise<boolean> {
+    async testUsingToken(req: Request, res: Response) {
+        res.send('Hello World');
+    }
+
+    async registerWithPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
         // Extract user input from request body
         const user: User = { ...req.body };
 
@@ -43,10 +52,13 @@ export default class AuthRouter {
             next(error);
         }
 
-        return true;
+        res.json({
+            success: true,
+            message: 'User registered. Please check email',
+        });
     }
 
-    async login(req: Request, res: Response): Promise<void> {
+    async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { email, password } = req.body;
         const user = await this.userService.findByEmail(email);
 
@@ -58,8 +70,15 @@ export default class AuthRouter {
             throw UnauthorizedException('Wrong combination. Please check then re-login');
         }
 
-        const userToken = await this.authService.login(user);
+        try {
+            const userToken = await this.authService.login(user);
+            res.send(userToken);
+        } catch (err) {
+            next(err);
+        }
+    }
 
-        res.send(userToken);
+    async refreshToken(req: Request, res: Response, next: NextFunction) {
+        throw NotImplementedException('Wait for it!');
     }
 }

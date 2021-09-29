@@ -3,14 +3,14 @@ import * as bcrypt from 'bcrypt';
 import { RoleEnum } from '../services/user/user.variable';
 
 const SALT: number = 10;
-interface User extends Document {
+export interface User extends Document {
     email: string;
     password: string;
     role: RoleEnum;
     checkPassword: (password: string) => Promise<boolean>;
 }
 
-const UserSchema: Schema<User> = new Schema<User>(
+export const UserSchema: Schema<User> = new Schema<User>(
     {
         email: {
             type: String,
@@ -49,7 +49,4 @@ UserSchema.pre('save', async function preSave(next: any) {
     next();
 });
 
-const UserModel: Model<User> = model<User>('User', UserSchema);
-
-export { User, UserSchema };
-export default UserModel;
+export const UserModel: Model<User> = model<User>('User', UserSchema);
