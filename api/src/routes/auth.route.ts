@@ -18,13 +18,16 @@ export default class AuthRouter {
         const router = Router();
 
         router.post('/register', this.authController.registerWithPassword);
-        router.post('/login', this.authController.login);
-        router.post('/refresh_token', this.authController.refreshToken);
+        router.post('/login', this.authController.loginWithPassword);
         router.post(
-            '/sample-protected-path',
+            '/refresh-token',
             passport.authenticate('jwt', { session: false }),
-            this.authController.sampleFunction,
+            this.authController.refreshToken,
         );
+
+        router.post('/test', passport.authenticate('jwt', { session: false }), (req, res) => {
+            res.json({ status: 'Authorized' });
+        });
 
         return router;
     }

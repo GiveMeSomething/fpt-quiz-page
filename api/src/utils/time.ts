@@ -10,4 +10,4 @@ export const compareTimestamp = (timestamp: number, compareTo: number): number =
     return 0;
 };
 
-export const isExpire = (timestamp: number): boolean => compareTimestamp(timestamp, currentTimestampInSecond()) > 0;
+export const isExpired = (timestamp: number): boolean => compareTimestamp(timestamp, currentTimestampInSecond()) < 0;

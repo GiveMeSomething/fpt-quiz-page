@@ -33,8 +33,9 @@ export default class AuthRepository {
         return newToken;
     }
 
-    async removeByUserId(userId: string): Promise<RefreshToken> {
-        return this.refreshTokenModel.remove({ userId });
+    async removeByUserId(userId: string): Promise<boolean> {
+        const result = await this.refreshTokenModel.deleteOne({ userId });
+        return result.acknowledged;
     }
 
     async findByUserId(userId: string): Promise<Undefinable<RefreshToken>> {

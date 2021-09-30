@@ -33,6 +33,10 @@ export default class UserService {
         return newUser;
     }
 
+    async findById(userId: string): Promise<Undefinable<User>> {
+        return this.userRepository.findById(userId);
+    }
+
     async findByEmail(email: string): Promise<Undefinable<User>> {
         return this.userRepository.findByEmail(email);
     }

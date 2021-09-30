@@ -27,6 +27,10 @@ export default class UserRepository {
         return createdUser;
     }
 
+    async findById(userId: string): Promise<Undefinable<User>> {
+        return this.userModel.findOne({ _id: userId }).exec();
+    }
+
     async findByEmail(email: string): Promise<Undefinable<User>> {
         return this.userModel.findOne({ email }).exec();
     }

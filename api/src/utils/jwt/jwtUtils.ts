@@ -5,18 +5,22 @@ import { RefreshTokenPayload, RefreshTokenResponse, JwtPayload } from '../../ser
 import { InternalServerException } from '../errorHandler/commonError';
 import { currentTimestampInSecond } from '../time';
 
-const issueToken = (payload: any, expiresIn: number | string): string => {
+export const getSecretKey = () => {
     const secret = process.env.SECRET_KEY;
 
     if (!secret) {
         throw InternalServerException('Secret key not found');
     }
 
-    return jwt.sign(payload, secret, { expiresIn });
+    return secret;
 };
 
+function issueToken(payload: any, expiresIn: number | string): string {
+    return jwt.sign(payload, getSecretKey(), { expiresIn });
+}
+
 // Currently use time as payload (will look into it later)
-const refreshToken = (user: User): RefreshTokenResponse => {
+function issueRefreshToken(user: User): RefreshTokenResponse {
     const payload: RefreshTokenPayload = {
         sub: user._id,
         iat: currentTimestampInSecond(),
@@ -30,9 +34,9 @@ const refreshToken = (user: User): RefreshTokenResponse => {
         accessToken: token,
         expires: expiresIn,
     };
-};
+}
 
-export default function issueJwt(user: User) {
+export function issueJwt(user: User) {
     const payload: JwtPayload = {
         sub: user._id,
         role: user.role,
@@ -41,13 +45,13 @@ export default function issueJwt(user: User) {
 
     // Set expireTime to 15min (in ms)
     // const expiresIn = 15 * 60 * 1000;
-    const expiresIn = 1000;
+    const expiresIn = 100000;
 
     const token = issueToken(payload, expiresIn);
 
     return {
         accessToken: token,
-        refreshToken: refreshToken(user),
+        refreshToken: issueRefreshToken(user),
         expires: expiresIn,
         tokenType: 'Bearer',
     };

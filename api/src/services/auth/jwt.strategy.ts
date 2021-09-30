@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { ExtractJwt, Strategy as JwtStrategy, StrategyOptions, VerifiedCallback } from 'passport-jwt';
 import { UserModel } from '../../models/user';
 import { UnauthorizedException } from '../../utils/errorHandler/commonError';
-import { isExpire } from '../../utils/time';
+import { isExpired } from '../../utils/time';
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ const options: StrategyOptions = {
 const validate = async (payload: any, done: VerifiedCallback) => {
     console.log(payload);
 
-    if (isExpire(payload.exp)) {
+    if (isExpired(payload.exp)) {
         return done(UnauthorizedException('Unauthorized'));
     }
 

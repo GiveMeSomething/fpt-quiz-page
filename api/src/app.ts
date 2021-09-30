@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 
 import express, { NextFunction, Request, Response } from 'express';
 
@@ -21,6 +22,7 @@ app.use(passport.initialize());
 // Use middleware to parse request body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Routing
 route(app);

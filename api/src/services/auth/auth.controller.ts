@@ -6,11 +6,8 @@ import { Service } from 'typedi';
 import AuthService from './auth.service';
 import UserService from '../user/user.service';
 import { User } from '../../models/user';
-import {
-    BadRequestException,
-    NotImplementedException,
-    UnauthorizedException,
-} from '../../utils/errorHandler/commonError';
+import { BadRequestException, UnauthorizedException } from '../../utils/errorHandler/commonError';
+import { RefreshTokenResponse } from './auth.type';
 
 @Service()
 export default class AuthController {
@@ -23,11 +20,8 @@ export default class AuthController {
         this.userService = userService;
 
         this.registerWithPassword = this.registerWithPassword.bind(this);
-        this.login = this.login.bind(this);
-    }
-
-    async sampleFunction(req: Request, res: Response) {
-        res.send('Hello World');
+        this.loginWithPassword = this.loginWithPassword.bind(this);
+        this.refreshToken = this.refreshToken.bind(this);
     }
 
     async registerWithPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -46,35 +40,60 @@ export default class AuthController {
         });
     }
 
-    async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async loginWithPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { email, password } = req.body;
-        const user = await this.userService.findByEmail(email);
-
-        if (!user) {
-            throw BadRequestException('User not existed. Please register.');
-        }
-
-        if (!(await user.checkPassword(password))) {
-            throw UnauthorizedException('Wrong combination. Please check then re-login');
-        }
 
         try {
-            const { refreshToken, ...userToken } = await this.authService.login(user);
+            const user = await this.userService.findByEmail(email);
 
-            // Save refresh token to HttpOnly cookies
-            res.cookie('fpt-refresh-token', refreshToken.accessToken, {
-                maxAge: refreshToken.expires,
-                httpOnly: true,
-            });
+            if (!user) {
+                throw BadRequestException('User not existed. Please register.');
+            }
 
-            // Send back JWT to client
-            res.send(userToken);
+            if (!(await user.checkPassword(password))) {
+                throw UnauthorizedException('Wrong combination. Please check then re-login');
+            }
+
+            await this.sendTokenToClient(res, user);
         } catch (err) {
             next(err);
         }
     }
 
     async refreshToken(req: Request, res: Response, next: NextFunction) {
-        throw NotImplementedException('Wait for it!');
+        // Get refresh token from cookie
+        const refreshToken = req.cookies['fpt-refresh-token'];
+
+        try {
+            // Verify token
+            const payload = await this.authService.verifyRefreshToken(refreshToken);
+            if (!payload) {
+                throw UnauthorizedException('Unauthoirized');
+            }
+
+            // Get user info to issue new token
+            const user = await this.userService.findById(payload.sub);
+            if (!user) {
+                throw BadRequestException('User not existed');
+            }
+
+            // Send !
+            await this.sendTokenToClient(res, user);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async sendTokenToClient(res: Response, user: User) {
+        const { refreshToken, ...userToken } = await this.authService.fetchToken(user);
+
+        // Save refresh token to HttpOnly cookies
+        res.cookie('fpt-refresh-token', refreshToken.accessToken, {
+            maxAge: refreshToken.expires,
+            httpOnly: true,
+        });
+
+        // Send back JWT to client
+        res.send(userToken);
     }
 }

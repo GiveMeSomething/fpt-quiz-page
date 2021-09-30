@@ -1,14 +1,18 @@
 import 'reflect-metadata';
+import * as jwt from 'jsonwebtoken';
 
 import { Service } from 'typedi';
 
-import issueJwt from '../../utils/jwt/jwtUtils';
+import { issueJwt, getSecretKey } from '../../utils/jwt/jwtUtils';
 import UserService from '../user/user.service';
 
 import { User } from '../../models/user';
 import { JwtResponse } from './auth.type';
 import AuthRepository from './auth.repository';
-import { InternalServerException } from '../../utils/errorHandler/commonError';
+import { InternalServerException, UnauthorizedException } from '../../utils/errorHandler/commonError';
+import { isExpired } from '../../utils/time';
+import { RefreshToken } from '../../models/refreshToken';
+import { Undefinable } from '../../@types/app.type';
 
 @Service()
 export default class AuthService {
@@ -32,7 +36,24 @@ export default class AuthService {
         return newUser;
     }
 
-    async login(user: User): Promise<JwtResponse> {
+    async verifyRefreshToken(refreshToken: string): Promise<any> {
+        const secret = getSecretKey();
+        const payload: any = jwt.verify(refreshToken, secret);
+
+        const savedToken: Undefinable<RefreshToken> = await this.authRepository.findByUserId(payload.sub);
+        if (!savedToken) {
+            throw UnauthorizedException('Refresh token not available. Please login');
+        }
+
+        const isTokenExpired = isExpired(payload.exp);
+        if (isTokenExpired) {
+            throw UnauthorizedException('Refresh token expired. Please login');
+        }
+
+        return payload;
+    }
+
+    async fetchToken(user: User): Promise<JwtResponse> {
         // Request new jwt
         const token = issueJwt(user);
 
