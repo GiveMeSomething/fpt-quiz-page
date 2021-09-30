@@ -1,8 +1,13 @@
-export type AuthResponse = {
+export type RefreshTokenResponse = {
     accessToken: string;
-    refreshToken: string;
+    expires: number;
+};
+
+export type JwtResponse = {
+    accessToken: string;
+    refreshToken: RefreshTokenResponse;
     tokenType?: string;
-    expires: number | string;
+    expires: number;
 };
 
 export type JwtPayload = {

@@ -26,7 +26,6 @@ export function handleError(err: any, req: Request, res: Response, next: NextFun
         res.status(statusCode).json({
             status: statusName,
             statusCode,
-            source,
             message,
         });
     } else {

@@ -1,9 +1,8 @@
 import 'reflect-metadata';
 
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { Service } from 'typedi';
 
-import passport from 'passport';
 import AuthService from './auth.service';
 import UserService from '../user/user.service';
 import { User } from '../../models/user';
@@ -25,17 +24,6 @@ export default class AuthController {
 
         this.registerWithPassword = this.registerWithPassword.bind(this);
         this.login = this.login.bind(this);
-    }
-
-    route() {
-        const router = Router();
-
-        router.post('/register', this.registerWithPassword);
-        router.post('/login', this.login);
-        router.post('/refresh_token', this.refreshToken);
-        router.post('/sample-protected-path', passport.authenticate('jwt', { session: false }), this.sampleFunction);
-
-        return router;
     }
 
     async sampleFunction(req: Request, res: Response) {
@@ -71,7 +59,15 @@ export default class AuthController {
         }
 
         try {
-            const userToken = await this.authService.login(user);
+            const { refreshToken, ...userToken } = await this.authService.login(user);
+
+            // Save refresh token to HttpOnly cookies
+            res.cookie('fpt-refresh-token', refreshToken.accessToken, {
+                maxAge: refreshToken.expires,
+                httpOnly: true,
+            });
+
+            // Send back JWT to client
             res.send(userToken);
         } catch (err) {
             next(err);

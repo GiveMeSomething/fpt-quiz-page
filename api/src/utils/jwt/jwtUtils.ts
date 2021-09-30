@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 
 import { User } from '../../models/user';
-import { RefreshTokenPayload, AuthResponse } from '../../services/auth/auth.type';
+import { RefreshTokenPayload, RefreshTokenResponse, JwtPayload } from '../../services/auth/auth.type';
 import { InternalServerException } from '../errorHandler/commonError';
 import { currentTimestampInSecond } from '../time';
 
@@ -16,20 +16,24 @@ const issueToken = (payload: any, expiresIn: number | string): string => {
 };
 
 // Currently use time as payload (will look into it later)
-const refreshToken = (user: User): string => {
+const refreshToken = (user: User): RefreshTokenResponse => {
     const payload: RefreshTokenPayload = {
         sub: user._id,
         iat: currentTimestampInSecond(),
     };
 
     // Refresh token can be used up to a week
-    const expiresIn = 15 * 60 * 1000;
+    const expiresIn = 7 * 24 * 60 * 60 * 1000;
 
-    return issueToken(payload, expiresIn);
+    const token = issueToken(payload, expiresIn);
+    return {
+        accessToken: token,
+        expires: expiresIn,
+    };
 };
 
-export default function issueJwt(user: User): AuthResponse {
-    const payload: jwt.JwtPayload = {
+export default function issueJwt(user: User) {
+    const payload: JwtPayload = {
         sub: user._id,
         role: user.role,
         iat: currentTimestampInSecond(),

@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
-import AuthController from '../services/auth/auth.controller';
+import AuthRouter from './auth.route';
 
-const authController = Container.get(AuthController);
+const authRouter = Container.get(AuthRouter);
 
 const route = (app: any) => {
-    app.use('/auth', authController.route());
+    app.use('/auth', authRouter.route());
 };
 
 export default route;

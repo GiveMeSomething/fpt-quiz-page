@@ -1,19 +1,33 @@
 import { Document, Model, model, Schema } from 'mongoose';
+import { currentTimestampInSecond } from '../utils/time';
 
 export interface RefreshToken extends Document {
     userId: string;
-    token: string;
+    accessToken: string;
+    expires: number;
+    iat: number;
 }
 
-export const RefreshTokenSchema: Schema<RefreshToken> = new Schema<RefreshToken>({
-    userId: {
-        type: String,
-        required: true,
+export const RefreshTokenSchema: Schema<RefreshToken> = new Schema<RefreshToken>(
+    {
+        userId: {
+            type: String,
+            required: true,
+        },
+        accessToken: {
+            type: String,
+            required: true,
+        },
+        expires: {
+            type: Number,
+            default: 24 * 60 * 60 * 1000, // in ms (1 day)
+        },
+        iat: {
+            type: Number,
+            default: currentTimestampInSecond(),
+        },
     },
-    token: {
-        type: String,
-        required: true,
-    },
-});
+    { timestamps: true },
+);
 
 export const RefreshTokenModel: Model<RefreshToken> = model<RefreshToken>('RefreshToken', RefreshTokenSchema);
