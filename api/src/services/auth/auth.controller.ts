@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { NextFunction, Request, Response } from 'express';
 import { Service } from 'typedi';
 
+import passport from 'passport';
 import AuthService from './auth.service';
 import UserService from '../user/user.service';
 import { User } from '../../models/user';
@@ -65,11 +66,14 @@ export default class AuthController {
         const refreshToken = req.cookies['fpt-refresh-token'];
 
         try {
-            // Verify token
+            // Verify refresh token
             const payload = await this.authService.verifyRefreshToken(refreshToken);
             if (!payload) {
                 throw UnauthorizedException('Unauthoirized');
             }
+
+            // Call passport authentication for jwt
+            passport.authenticate('jwt', { session: false });
 
             // Get user info to issue new token
             const user = await this.userService.findById(payload.sub);

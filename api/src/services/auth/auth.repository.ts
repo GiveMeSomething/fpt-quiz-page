@@ -28,12 +28,23 @@ export default class AuthRepository {
             userId,
             refreshToken: refreshToken.accessToken,
             expires: refreshToken.expires,
-            currentAccessToken: accessToken,
         });
 
         await newToken.save();
 
         return newToken;
+    }
+
+    async findAccessTokenFamily(accessToken: string, userId: string): Promise<Undefinable<RefreshToken>> {
+        return this.refreshTokenModel.findOne({ userId, family: accessToken }, { family: 1, _id: 0 }).exec();
+    }
+
+    async findCurrentAccessToken(userId: string): Promise<Undefinable<RefreshToken>> {
+        return this.refreshTokenModel.findOne({ userId }, { currentAccessToken: 1, _id: 0 }).exec();
+    }
+
+    async findRefreshTokenByUserId(userId: string): Promise<Undefinable<RefreshToken>> {
+        return this.refreshTokenModel.findOne({ userId }).exec();
     }
 
     async updateRefreshToken(
@@ -42,14 +53,14 @@ export default class AuthRepository {
         userId: string,
     ): Promise<Undefinable<RefreshToken>> {
         // Get old jwt to push into family
-        const currentAccessToken = (await this.findCurrentAccessToken(userId))?.currentAccessToken;
+        const currentRefreshToken = (await this.findRefreshTokenByUserId(userId))?.refreshToken;
 
         // Update the current active refresh token documents
         return this.refreshTokenModel.findOneAndUpdate(
             { userId },
             {
                 $set: { refreshToken: refreshToken.accessToken, currentAccessToken: accessToken },
-                $push: { family: currentAccessToken },
+                $push: { family: currentRefreshToken },
             },
             {
                 new: true,
@@ -61,20 +72,12 @@ export default class AuthRepository {
         return this.refreshTokenModel.findOneAndUpdate({ userId }, { $push: { family: accessToken } }).exec();
     }
 
-    async findAccessTokenFamily(accessToken: string, userId: string): Promise<Undefinable<RefreshToken>> {
-        return this.refreshTokenModel.findOne({ userId, family: accessToken }, { family: 1, _id: 0 }).exec();
-    }
-
-    async findCurrentAccessToken(userId: string): Promise<Undefinable<RefreshToken>> {
-        return this.refreshTokenModel.findOne({ userId }, { currentAccessToken: 1, _id: 0 }).exec();
+    async disableRefreshToken(userId: string) {
+        return this.refreshTokenModel.findOneAndUpdate({ userId }, { $set: { valid: false } });
     }
 
     async removeRefreshTokenByUserId(userId: string): Promise<boolean> {
         const result = await this.refreshTokenModel.deleteOne({ userId });
         return result.acknowledged;
-    }
-
-    async findRefreshTokenByUserId(userId: string): Promise<Undefinable<RefreshToken>> {
-        return this.refreshTokenModel.findOne({ userId }).exec();
     }
 }

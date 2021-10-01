@@ -40,22 +40,6 @@ class JwtStrategyContainer {
         //     iat,
         //     exp
 
-        if (isExpired(payload.exp)) {
-            const userId = payload.sub;
-
-            // If token is expired, save it into refresh token family
-            const currentAccessToken = (await this.authRepository.findCurrentAccessToken(userId))?.currentAccessToken;
-
-            if (!currentAccessToken) {
-                throw InternalServerException('Cannot get access token from database');
-            }
-
-            await this.authRepository.updateRefreshTokenFamily(currentAccessToken, userId);
-
-            // Then return unauthorized
-            return done(UnauthorizedException('Unauthorized'));
-        }
-
         try {
             const user = await this.userService.findById(payload.sub);
 

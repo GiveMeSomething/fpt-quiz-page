@@ -19,11 +19,7 @@ export default class AuthRouter {
 
         router.post('/register', this.authController.registerWithPassword);
         router.post('/login', this.authController.loginWithPassword);
-        router.post(
-            '/refresh-token',
-            passport.authenticate('jwt', { session: false }),
-            this.authController.refreshToken,
-        );
+        router.post('/refresh-token', this.authController.refreshToken);
 
         router.post('/test', passport.authenticate('jwt', { session: false }), (req, res) => {
             res.json({ status: 'Authorized' });

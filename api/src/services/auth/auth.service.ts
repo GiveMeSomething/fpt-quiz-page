@@ -45,6 +45,17 @@ export default class AuthService {
             throw UnauthorizedException('Refresh token not available. Please login');
         }
 
+        if (!savedToken.valid) {
+            // Do something to notify the user that someone try to access account
+            throw UnauthorizedException('Refresh token is stolen. Please login');
+        }
+
+        // Check if the token exist in family
+        const refreshTokenFamily: string[] = savedToken.family;
+        if (refreshTokenFamily.includes(refreshToken)) {
+            throw UnauthorizedException('Refresh token not available. Please login');
+        }
+
         const isTokenExpired = isExpired(payload.exp);
         if (isTokenExpired) {
             throw UnauthorizedException('Refresh token expired. Please login');

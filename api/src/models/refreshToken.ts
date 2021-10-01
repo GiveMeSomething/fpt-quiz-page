@@ -6,8 +6,8 @@ export interface RefreshToken extends Document {
     refreshToken: string;
     expires: number;
     iat: number;
-    currentAccessToken: string;
     family: string[];
+    valid: boolean;
 }
 
 export const RefreshTokenSchema: Schema<RefreshToken> = new Schema<RefreshToken>(
@@ -28,13 +28,13 @@ export const RefreshTokenSchema: Schema<RefreshToken> = new Schema<RefreshToken>
             type: Number,
             default: currentTimestampInSecond(),
         },
-        currentAccessToken: {
-            type: String,
-            required: true,
-        },
         family: {
             type: [String],
             default: [],
+        },
+        valid: {
+            type: Boolean,
+            default: true,
         },
     },
     { timestamps: true },
