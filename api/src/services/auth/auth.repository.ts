@@ -18,12 +18,17 @@ export default class AuthRepository {
         this.refreshTokenModel = RefreshTokenModel;
     }
 
-    async createRefreshToken(refreshToken: RefreshTokenResponse, userId: string): Promise<RefreshToken> {
+    async createRefreshToken(
+        refreshToken: RefreshTokenResponse,
+        accessToken: string,
+        userId: string,
+    ): Promise<RefreshToken> {
         // iat will be default at Date.now()
         const newToken: RefreshToken = await this.refreshTokenModel.create({
             userId,
-            accessToken: refreshToken.accessToken,
+            refreshToken: refreshToken.accessToken,
             expires: refreshToken.expires,
+            currentAccessToken: accessToken,
         });
 
         await newToken.save();
@@ -31,12 +36,37 @@ export default class AuthRepository {
         return newToken;
     }
 
-    async updateRefreshToken(refreshToken: RefreshTokenResponse, userId: string): Promise<Undefinable<RefreshToken>> {
-        return this.refreshTokenModel.findOneAndUpdate({ userId }, { $set: { ...refreshToken } }).exec();
+    async updateRefreshToken(
+        refreshToken: RefreshTokenResponse,
+        accessToken: string,
+        userId: string,
+    ): Promise<Undefinable<RefreshToken>> {
+        // Get old jwt to push into family
+        const currentAccessToken = (await this.findCurrentAccessToken(userId))?.currentAccessToken;
+
+        // Update the current active refresh token documents
+        return this.refreshTokenModel.findOneAndUpdate(
+            { userId },
+            {
+                $set: { refreshToken: refreshToken.accessToken, currentAccessToken: accessToken },
+                $push: { family: currentAccessToken },
+            },
+            {
+                new: true,
+            },
+        );
     }
 
     async updateRefreshTokenFamily(accessToken: string, userId: string): Promise<Undefinable<RefreshToken>> {
         return this.refreshTokenModel.findOneAndUpdate({ userId }, { $push: { family: accessToken } }).exec();
+    }
+
+    async findAccessTokenFamily(accessToken: string, userId: string): Promise<Undefinable<RefreshToken>> {
+        return this.refreshTokenModel.findOne({ userId, family: accessToken }, { family: 1, _id: 0 }).exec();
+    }
+
+    async findCurrentAccessToken(userId: string): Promise<Undefinable<RefreshToken>> {
+        return this.refreshTokenModel.findOne({ userId }, { currentAccessToken: 1, _id: 0 }).exec();
     }
 
     async removeRefreshTokenByUserId(userId: string): Promise<boolean> {

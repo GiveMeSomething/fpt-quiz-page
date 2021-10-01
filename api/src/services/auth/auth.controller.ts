@@ -54,7 +54,7 @@ export default class AuthController {
                 throw UnauthorizedException('Wrong combination. Please check then re-login');
             }
 
-            await this.sendTokenToClient(res, user);
+            await this.sendTokenToClient(res, user, true);
         } catch (err) {
             next(err);
         }
@@ -84,8 +84,8 @@ export default class AuthController {
         }
     }
 
-    async sendTokenToClient(res: Response, user: User) {
-        const { refreshToken, ...userToken } = await this.authService.fetchToken(user);
+    async sendTokenToClient(res: Response, user: User, isLogin?: boolean) {
+        const { refreshToken, ...userToken } = await this.authService.fetchToken(user, isLogin);
 
         // Save refresh token to HttpOnly cookies
         res.cookie('fpt-refresh-token', refreshToken.accessToken, {

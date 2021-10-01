@@ -3,9 +3,10 @@ import { currentTimestampInSecond } from '../utils/time';
 
 export interface RefreshToken extends Document {
     userId: string;
-    accessToken: string;
+    refreshToken: string;
     expires: number;
     iat: number;
+    currentAccessToken: string;
     family: string[];
 }
 
@@ -15,7 +16,7 @@ export const RefreshTokenSchema: Schema<RefreshToken> = new Schema<RefreshToken>
             type: String,
             required: true,
         },
-        accessToken: {
+        refreshToken: {
             type: String,
             required: true,
         },
@@ -26,6 +27,10 @@ export const RefreshTokenSchema: Schema<RefreshToken> = new Schema<RefreshToken>
         iat: {
             type: Number,
             default: currentTimestampInSecond(),
+        },
+        currentAccessToken: {
+            type: String,
+            required: true,
         },
         family: {
             type: [String],

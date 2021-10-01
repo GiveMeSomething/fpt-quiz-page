@@ -6,8 +6,8 @@ import express, { NextFunction, Request, Response } from 'express';
 
 import route from './routes';
 import database from './config/database/database';
-import useJwtStrategy from './services/auth/jwt.strategy';
 import { handleError } from './utils/errorHandler/error';
+import jwtStrategy from './services/auth/jwt.strategy';
 
 // Read env variables
 dotenv.config();
@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 
 // Setup passport configurations
-useJwtStrategy(passport);
+passport.use(jwtStrategy());
 app.use(passport.initialize());
 
 // Use middleware to parse request body

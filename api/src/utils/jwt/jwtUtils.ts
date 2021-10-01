@@ -5,6 +5,7 @@ import { RefreshTokenPayload, RefreshTokenResponse, JwtPayload } from '../../ser
 import { InternalServerException } from '../errorHandler/commonError';
 import { currentTimestampInSecond } from '../time';
 
+// The time is in second(s) due to my configuration (not in 'ms' like jwt docs)
 export const getSecretKey = () => {
     const secret = process.env.SECRET_KEY;
 
@@ -27,7 +28,7 @@ function issueRefreshToken(user: User): RefreshTokenResponse {
     };
 
     // Refresh token can be used up to a week
-    const expiresIn = 7 * 24 * 60 * 60 * 1000;
+    const expiresIn = 7 * 24 * 60 * 60;
 
     const token = issueToken(payload, expiresIn);
     return {
@@ -43,9 +44,8 @@ export function issueJwt(user: User) {
         iat: currentTimestampInSecond(),
     };
 
-    // Set expireTime to 15min (in ms)
-    // const expiresIn = 15 * 60 * 1000;
-    const expiresIn = 100000;
+    // Expires in 15 minutes
+    const expiresIn = 15 * 60;
 
     const token = issueToken(payload, expiresIn);
 

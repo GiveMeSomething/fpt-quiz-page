@@ -3,16 +3,16 @@ import * as jwt from 'jsonwebtoken';
 
 import { Service } from 'typedi';
 
-import { issueJwt, getSecretKey } from '../../utils/jwt/jwtUtils';
 import UserService from '../user/user.service';
+import AuthRepository from './auth.repository';
 
 import { User } from '../../models/user';
 import { JwtResponse } from './auth.type';
-import AuthRepository from './auth.repository';
 import { InternalServerException, UnauthorizedException } from '../../utils/errorHandler/commonError';
 import { isExpired } from '../../utils/time';
 import { RefreshToken } from '../../models/refreshToken';
 import { Undefinable } from '../../@types/app.type';
+import { issueJwt, getSecretKey } from '../../utils/jwt/jwtUtils';
 
 @Service()
 export default class AuthService {
@@ -53,7 +53,7 @@ export default class AuthService {
         return payload;
     }
 
-    async fetchToken(user: User): Promise<JwtResponse> {
+    async fetchToken(user: User, isLogin?: boolean): Promise<JwtResponse> {
         // Request new jwt
         const token = issueJwt(user);
 
@@ -63,13 +63,27 @@ export default class AuthService {
         );
 
         // Refresh token rotation, issue new token each time requested
+        // Only when login, the system create new token
         if (!currentRefreshToken) {
-            await this.authRepository.createRefreshToken(token.refreshToken, user._id);
+            if (!isLogin) {
+                throw UnauthorizedException('User not authorized by refresh token');
+            }
+            await this.authRepository.createRefreshToken(token.refreshToken, token.accessToken, user._id);
         } else {
-            await this.authRepository.updateRefreshToken(token.refreshToken, user._id);
+            await this.authRepository.updateRefreshToken(token.refreshToken, token.accessToken, user._id);
         }
 
         // Return jwt, refreshToken to controller, refreshToken then saved to client cookie
         return token;
+    }
+
+    async saveExpiredAccessToken(accessToken: string, userId: string): Promise<boolean> {
+        const result = await this.authRepository.updateRefreshTokenFamily(accessToken, userId);
+
+        if (!result) {
+            throw InternalServerException('Cannot save expired token');
+        }
+
+        return true;
     }
 }
