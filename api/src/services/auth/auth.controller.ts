@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
-import { NextFunction, Request, Response } from 'express';
 import { Service } from 'typedi';
+import { NextFunction, Request, Response } from 'express';
 
 import AuthService from './auth.service';
 import UserService from '../user/user.service';
@@ -22,6 +22,7 @@ export default class AuthController {
 
         this.registerWithPassword = this.registerWithPassword.bind(this);
         this.loginWithPassword = this.loginWithPassword.bind(this);
+        this.sendTokenToClient = this.sendTokenToClient.bind(this);
         this.refreshToken = this.refreshToken.bind(this);
     }
 
@@ -31,36 +32,41 @@ export default class AuthController {
 
         try {
             await this.authService.register(user);
+
+            res.json({
+                success: true,
+                message: 'User registered',
+            });
         } catch (error) {
             next(error);
         }
-
-        res.json({
-            success: true,
-            message: 'User registered. Please check email',
-        });
     }
 
     async loginWithPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { email, password } = req.body;
 
         try {
+            // Check if user existed
             const user = await this.userService.findByEmail(email);
 
             if (!user) {
                 throw BadRequestException('User not existed. Please register.');
             }
 
+            // Check user input credentials
             if (!(await user.checkPassword(password))) {
                 throw UnauthorizedException('Wrong combination. Please check then re-login');
             }
 
+            // Send back accessToken
             await this.sendTokenToClient(res, { userId: user._id, role: user.role }, true);
         } catch (err) {
             next(err);
         }
     }
 
+    // This path is authenticate by passport
+    // The req.user will contain payload info
     async refreshToken(req: Request, res: Response, next: NextFunction) {
         try {
             if (!req.user) {
@@ -70,7 +76,7 @@ export default class AuthController {
             // Get user info to issue new token
             const user = { userId: req.user?._id, role: req.user.role };
 
-            // Send !
+            // Send back accessToken
             await this.sendTokenToClient(res, user);
         } catch (err) {
             next(err);

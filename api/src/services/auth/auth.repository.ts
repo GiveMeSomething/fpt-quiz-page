@@ -18,7 +18,7 @@ export default class AuthRepository {
         this.refreshTokenModel = RefreshTokenModel;
     }
 
-    async createRefreshToken(
+    async createRefreshTokenDocument(
         refreshToken: RefreshTokenResponse,
         accessToken: string,
         userId: string,
@@ -47,7 +47,7 @@ export default class AuthRepository {
         return this.refreshTokenModel.findOne({ userId, valid: true }).exec();
     }
 
-    async updateRefreshToken(
+    async updateRefreshTokenDocument(
         refreshToken: RefreshTokenResponse,
         accessToken: string,
         userId: string,
@@ -68,7 +68,7 @@ export default class AuthRepository {
         );
     }
 
-    async updateRefreshTokenFamily(accessToken: string, userId: string): Promise<Undefinable<RefreshToken>> {
+    async updateRefreshTokenDocumentFamily(accessToken: string, userId: string): Promise<Undefinable<RefreshToken>> {
         return this.refreshTokenModel.findOneAndUpdate({ userId }, { $push: { family: accessToken } }).exec();
     }
 
