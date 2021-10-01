@@ -40,7 +40,7 @@ export default class AuthService {
         const secret = getSecretKey();
         const payload: any = jwt.verify(refreshToken, secret);
 
-        const savedToken: Undefinable<RefreshToken> = await this.authRepository.findByUserId(payload.sub);
+        const savedToken: Undefinable<RefreshToken> = await this.authRepository.findRefreshTokenByUserId(payload.sub);
         if (!savedToken) {
             throw UnauthorizedException('Refresh token not available. Please login');
         }
@@ -57,19 +57,16 @@ export default class AuthService {
         // Request new jwt
         const token = issueJwt(user);
 
-        // Check refresh token with database then renew it
-        const savedRefreshToken = await this.authRepository.findByUserId(user._id);
+        // Get current refresh token, else create one (e.g. when user login)
+        const currentRefreshToken: Undefinable<RefreshToken> = await this.authRepository.findRefreshTokenByUserId(
+            user._id,
+        );
 
-        // Delete old refresh token
-        if (savedRefreshToken) {
-            this.authRepository.removeByUserId(user._id);
-        }
-
-        // Save new refresh token
-        const newRefreshToken = await this.authRepository.create(token.refreshToken, user._id);
-
-        if (!newRefreshToken) {
-            throw InternalServerException('Cannot save new refresh token');
+        // Refresh token rotation, issue new token each time requested
+        if (!currentRefreshToken) {
+            await this.authRepository.createRefreshToken(token.refreshToken, user._id);
+        } else {
+            await this.authRepository.updateRefreshToken(token.refreshToken, user._id);
         }
 
         // Return jwt, refreshToken to controller, refreshToken then saved to client cookie

@@ -4,11 +4,9 @@ import * as jwt from 'jsonwebtoken';
 import { Model } from 'mongoose';
 import { Service } from 'typedi';
 
-import { RefreshToken, RefreshTokenModel } from '../../models/refreshToken';
-import { User } from '../../models/user';
 import { RefreshTokenResponse } from './auth.type';
-import { InternalServerException } from '../../utils/errorHandler/commonError';
 import { Undefinable } from '../../@types/app.type';
+import { RefreshToken, RefreshTokenModel } from '../../models/refreshToken';
 
 // Only write operation with database in here
 // Mainly dealt with refresh token
@@ -20,7 +18,7 @@ export default class AuthRepository {
         this.refreshTokenModel = RefreshTokenModel;
     }
 
-    async create(refreshToken: RefreshTokenResponse, userId: string): Promise<RefreshToken> {
+    async createRefreshToken(refreshToken: RefreshTokenResponse, userId: string): Promise<RefreshToken> {
         // iat will be default at Date.now()
         const newToken: RefreshToken = await this.refreshTokenModel.create({
             userId,
@@ -33,12 +31,20 @@ export default class AuthRepository {
         return newToken;
     }
 
-    async removeByUserId(userId: string): Promise<boolean> {
+    async updateRefreshToken(refreshToken: RefreshTokenResponse, userId: string): Promise<Undefinable<RefreshToken>> {
+        return this.refreshTokenModel.findOneAndUpdate({ userId }, { $set: { ...refreshToken } }).exec();
+    }
+
+    async updateRefreshTokenFamily(accessToken: string, userId: string): Promise<Undefinable<RefreshToken>> {
+        return this.refreshTokenModel.findOneAndUpdate({ userId }, { $push: { family: accessToken } }).exec();
+    }
+
+    async removeRefreshTokenByUserId(userId: string): Promise<boolean> {
         const result = await this.refreshTokenModel.deleteOne({ userId });
         return result.acknowledged;
     }
 
-    async findByUserId(userId: string): Promise<Undefinable<RefreshToken>> {
+    async findRefreshTokenByUserId(userId: string): Promise<Undefinable<RefreshToken>> {
         return this.refreshTokenModel.findOne({ userId }).exec();
     }
 }
