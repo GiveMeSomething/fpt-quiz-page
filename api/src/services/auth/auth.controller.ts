@@ -62,16 +62,7 @@ export default class AuthController {
     }
 
     async refreshToken(req: Request, res: Response, next: NextFunction) {
-        // Get refresh token from cookie
-        const refreshToken = req.cookies['fpt-refresh-token'];
-
         try {
-            // Verify refresh token
-            const payload = await this.authService.verifyRefreshToken(refreshToken);
-            if (!payload) {
-                throw UnauthorizedException('Unauthoirized');
-            }
-
             // Call passport authentication for jwt
             passport.authenticate('jwt', { session: false });
 
