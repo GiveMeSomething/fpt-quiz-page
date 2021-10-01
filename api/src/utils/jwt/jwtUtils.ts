@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import { UserArgs } from '../../@types/app.type';
 
 import { User } from '../../models/user';
 import { RefreshTokenPayload, RefreshTokenResponse, JwtPayload } from '../../services/auth/auth.type';
@@ -21,9 +22,9 @@ function issueToken(payload: any, expiresIn: number | string): string {
 }
 
 // Currently use time as payload (will look into it later)
-function issueRefreshToken(user: User): RefreshTokenResponse {
+function issueRefreshToken(userId: string): RefreshTokenResponse {
     const payload: RefreshTokenPayload = {
-        sub: user._id,
+        sub: userId,
         iat: currentTimestampInSecond(),
     };
 
@@ -37,11 +38,11 @@ function issueRefreshToken(user: User): RefreshTokenResponse {
     };
 }
 
-export function issueJwt(user: User) {
+export function issueJwt({ userId, role }: UserArgs) {
     const payload: JwtPayload = {
-        sub: user._id,
-        role: user.role,
+        sub: userId,
         iat: currentTimestampInSecond(),
+        role,
     };
 
     // Expires in 15 minutes
@@ -51,7 +52,7 @@ export function issueJwt(user: User) {
 
     return {
         accessToken: token,
-        refreshToken: issueRefreshToken(user),
+        refreshToken: issueRefreshToken(userId),
         expires: expiresIn,
         tokenType: 'Bearer',
     };

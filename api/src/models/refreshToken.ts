@@ -28,13 +28,14 @@ export const RefreshTokenSchema: Schema<RefreshToken> = new Schema<RefreshToken>
             type: Number,
             default: currentTimestampInSecond(),
         },
+        valid: {
+            type: Boolean,
+            required: true,
+            default: true,
+        },
         family: {
             type: [String],
             default: [],
-        },
-        valid: {
-            type: Boolean,
-            default: true,
         },
     },
     { timestamps: true },

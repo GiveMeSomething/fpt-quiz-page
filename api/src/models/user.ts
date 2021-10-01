@@ -1,4 +1,4 @@
-import { Document, Model, model, ObjectId, Schema } from 'mongoose';
+import { Document, Model, model, Schema } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { RoleEnum } from '../services/user/user.variable';
 

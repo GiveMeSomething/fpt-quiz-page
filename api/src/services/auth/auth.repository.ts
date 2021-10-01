@@ -44,7 +44,7 @@ export default class AuthRepository {
     }
 
     async findRefreshTokenByUserId(userId: string): Promise<Undefinable<RefreshToken>> {
-        return this.refreshTokenModel.findOne({ userId }).exec();
+        return this.refreshTokenModel.findOne({ userId, valid: true }).exec();
     }
 
     async updateRefreshToken(

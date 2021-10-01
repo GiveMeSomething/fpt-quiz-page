@@ -3,12 +3,12 @@ import 'reflect-metadata';
 import { NextFunction, Request, Response } from 'express';
 import { Service } from 'typedi';
 
-import passport from 'passport';
 import AuthService from './auth.service';
 import UserService from '../user/user.service';
+
 import { User } from '../../models/user';
+import { UserArgs } from '../../@types/app.type';
 import { BadRequestException, UnauthorizedException } from '../../utils/errorHandler/commonError';
-import { RefreshTokenResponse } from './auth.type';
 
 @Service()
 export default class AuthController {
@@ -55,7 +55,7 @@ export default class AuthController {
                 throw UnauthorizedException('Wrong combination. Please check then re-login');
             }
 
-            await this.sendTokenToClient(res, user, true);
+            await this.sendTokenToClient(res, { userId: user._id, role: user.role }, true);
         } catch (err) {
             next(err);
         }
@@ -63,14 +63,12 @@ export default class AuthController {
 
     async refreshToken(req: Request, res: Response, next: NextFunction) {
         try {
-            // Call passport authentication for jwt
-            passport.authenticate('jwt', { session: false });
-
-            // Get user info to issue new token
-            const user = await this.userService.findById(payload.sub);
-            if (!user) {
+            if (!req.user) {
                 throw BadRequestException('User not existed');
             }
+
+            // Get user info to issue new token
+            const user = { userId: req.user?._id, role: req.user.role };
 
             // Send !
             await this.sendTokenToClient(res, user);
@@ -79,7 +77,7 @@ export default class AuthController {
         }
     }
 
-    async sendTokenToClient(res: Response, user: User, isLogin?: boolean) {
+    async sendTokenToClient(res: Response, user: UserArgs, isLogin?: boolean) {
         const { refreshToken, ...userToken } = await this.authService.fetchToken(user, isLogin);
 
         // Save refresh token to HttpOnly cookies

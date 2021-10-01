@@ -11,7 +11,7 @@ import { JwtResponse } from './auth.type';
 import { InternalServerException, UnauthorizedException } from '../../utils/errorHandler/commonError';
 import { isExpired } from '../../utils/time';
 import { RefreshToken } from '../../models/refreshToken';
-import { Undefinable } from '../../@types/app.type';
+import { Undefinable, UserArgs } from '../../@types/app.type';
 import { issueJwt, getSecretKey } from '../../utils/jwt/jwtUtils';
 
 @Service()
@@ -64,13 +64,14 @@ export default class AuthService {
         return payload;
     }
 
-    async fetchToken(user: User, isLogin?: boolean): Promise<JwtResponse> {
+    async fetchToken(user: UserArgs, isLogin?: boolean): Promise<JwtResponse> {
+        const { userId } = user;
         // Request new jwt
         const token = issueJwt(user);
 
         // Get current refresh token, else create one (e.g. when user login)
         const currentRefreshToken: Undefinable<RefreshToken> = await this.authRepository.findRefreshTokenByUserId(
-            user._id,
+            userId,
         );
 
         // Refresh token rotation, issue new token each time requested
@@ -79,9 +80,9 @@ export default class AuthService {
             if (!isLogin) {
                 throw UnauthorizedException('User not authorized by refresh token');
             }
-            await this.authRepository.createRefreshToken(token.refreshToken, token.accessToken, user._id);
+            await this.authRepository.createRefreshToken(token.refreshToken, token.accessToken, userId);
         } else {
-            await this.authRepository.updateRefreshToken(token.refreshToken, token.accessToken, user._id);
+            await this.authRepository.updateRefreshToken(token.refreshToken, token.accessToken, userId);
         }
 
         // Return jwt, refreshToken to controller, refreshToken then saved to client cookie
