@@ -8,11 +8,11 @@ import AuthRepository from './auth.repository';
 
 import { User } from '../../models/user';
 import { JwtResponse } from './auth.type';
-import { UnauthorizedException } from '../../utils/errorHandler/commonError';
 import { isExpired } from '../../utils/time';
 import { RefreshToken } from '../../models/refreshToken';
 import { Undefinable, UserArgs } from '../../@types/app.type';
 import { issueJwt, getSecretKey } from '../../utils/jwt/jwtUtils';
+import { UnauthorizedException } from '../../utils/errorHandler/commonError';
 
 @Service()
 export default class AuthService {

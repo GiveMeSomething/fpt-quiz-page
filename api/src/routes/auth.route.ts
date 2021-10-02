@@ -6,6 +6,7 @@ import { Router } from 'express';
 import { Service } from 'typedi';
 import AuthController from '../services/auth/auth.controller';
 import AuthMiddleware from '../middleware/auth.middleware';
+import LogMiddleware from '../middleware/log.middleware';
 
 @Service()
 export default class AuthRouter {
@@ -13,9 +14,12 @@ export default class AuthRouter {
 
     private readonly authMiddleware: AuthMiddleware;
 
-    constructor(authController: AuthController, authMiddleware: AuthMiddleware) {
+    private readonly logMiddleware: LogMiddleware;
+
+    constructor(authController: AuthController, authMiddleware: AuthMiddleware, logMiddleware: LogMiddleware) {
         this.authController = authController;
         this.authMiddleware = authMiddleware;
+        this.logMiddleware = logMiddleware;
     }
 
     route() {

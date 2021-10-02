@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { Service } from 'typedi';
 import { NextFunction, Request, Response } from 'express';
 
+import passport from 'passport';
 import AuthService from './auth.service';
 import UserService from '../user/user.service';
 
@@ -46,6 +47,11 @@ export default class AuthController {
         const { email, password } = req.body;
 
         try {
+            // User have already logged in
+            if (req.headers.authorization && req.headers.authorization !== '') {
+                throw BadRequestException('User logged in');
+            }
+
             // Check if user existed
             const user = await this.userService.findByEmail(email);
 
