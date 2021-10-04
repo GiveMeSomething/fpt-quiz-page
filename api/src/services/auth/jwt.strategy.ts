@@ -27,7 +27,7 @@ class JwtStrategyContainer {
     jwtStrategy() {
         const options: StrategyOptions = {
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: process.env.SECRET_KEY,
+            secretOrKey: process.env.TOKEN_SECRET_KEY,
         };
 
         return new JwtStrategy(options, this.validate);

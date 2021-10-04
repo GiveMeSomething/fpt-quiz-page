@@ -1,5 +1,6 @@
 import { Model } from 'mongoose';
 import { Service } from 'typedi';
+import { Undefinable } from '../../@types/app.type';
 import { Question, QuestionModel } from '../../models/question';
 
 @Service()
@@ -10,18 +11,10 @@ export default class QuizRepository {
         this.questionModel = QuestionModel;
     }
 
-    async create(question: Question): Promise<Question> {
-        const newQuestion = new this.questionModel({ ...question });
-        return newQuestion.save();
-    }
-
     async getFeaturedQuestions(): Promise<Question[]> {
-        const questionList = await this.questionModel.find({ isFeatured: true }).exec();
+        const questionList = await this.questionModel
+            .find({ isFeatured: true }, { _id: 0, question: 1, options: 1, answers: 1 })
+            .exec();
         return questionList;
-    }
-
-    async findQuestionById(questionId: string): Promise<Question> {
-        const question = await this.questionModel.findOne({ _id: questionId }).exec();
-        return question;
     }
 }

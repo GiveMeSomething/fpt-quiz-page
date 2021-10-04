@@ -8,7 +8,7 @@ import { currentTimestampInSecond } from '../time';
 
 // The time is in second(s) due to my configuration (not in 'ms' like jwt docs)
 export const getSecretKey = () => {
-    const secret = process.env.SECRET_KEY;
+    const secret = process.env.TOKEN_SECRET_KEY;
 
     if (!secret) {
         throw InternalServerException('Secret key not found');

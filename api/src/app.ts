@@ -24,7 +24,7 @@ app.use(passport.initialize());
 
 // Use middleware to parse request body
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded());
 app.use(cookieParser());
 
 // Log info of all action to database
