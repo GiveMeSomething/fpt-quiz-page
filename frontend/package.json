@@ -1,57 +1,44 @@
 {
-    "name": "frontend",
-    "version": "0.1.0",
-    "scripts": {
-        "start": "react-scripts start",
-        "lint": "eslint --cache --ext .ts,.js",
-        "format": "prettier --write .",
-        "lint-staged": "yarn lint && yarn format"
-    },
-    "dependencies": {
-        "@testing-library/jest-dom": "^5.11.4",
-        "@testing-library/react": "^11.1.0",
-        "@testing-library/user-event": "^12.1.10",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
-        "react-scripts": "4.0.3",
-        "web-vitals": "^1.0.1"
-    },
-    "devDependencies": {
-        "eslint": "^7.32.0",
-        "eslint-config-standard": "^16.0.3",
-        "eslint-plugin-import": "^2.24.2",
-        "eslint-plugin-node": "^11.1.0",
-        "eslint-plugin-promise": "^5.1.0",
-        "eslint-plugin-react": "^7.26.0",
-        "lint-staged": "^11.1.2",
-        "prettier": "^2.4.1"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "prettier": {
-        "semi": true,
-        "singleQuote": true,
-        "trailingComma": "all",
-        "tabWidth": 4,
-        "arrowParens": "always",
-        "endOfLine": "lf",
-        "printWidth": 120
-    },
-    "lint-staged": {
-        "*.{js, json, ts}": [
-            "yarn format",
-            "yarn lint",
-            "git add ."
-        ]
-    }
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start:dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint --cache --ext .ts,.js",
+    "format": "prettier --write .",
+    "lint:staged": "yarn lint-staged"
+  },
+  "dependencies": {
+    "next": "11.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "styled-components": "^5.3.1",
+    "tailwindcss": "^2.2.16"
+  },
+  "devDependencies": {
+    "eslint": "7.32.0",
+    "eslint-config-next": "11.0.1",
+    "lint-staged": "^11.2.0"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  },
+  "lint-staged": {
+    "*.{js, json, ts}": [
+      "yarn format",
+      "yarn lint",
+      "git add ."
+    ]
+  },
+  "resolutions": {
+    "node": "^14.16.0",
+    "styled-components": "^5"
+  }
 }
