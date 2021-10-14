@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import express, { NextFunction, Request, Response } from 'express';
 
@@ -23,8 +24,8 @@ passport.use(jwtStrategy());
 app.use(passport.initialize());
 
 // Use middleware to parse request body
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded());
 app.use(cookieParser());
 
 // Log info of all action to database

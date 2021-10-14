@@ -15,7 +15,7 @@ export default class LogMiddleware {
         this.endLog = this.endLog.bind(this);
     }
 
-    async startLog(req: Request, res: Response, next: NextFunction) {
+    async startLog(req: any, res: Response, next: NextFunction) {
         let requester = 'unknown';
 
         // eslint-disable-next-line prefer-destructuring
@@ -44,7 +44,7 @@ export default class LogMiddleware {
         next();
     }
 
-    async endLog(err: any, req: Request, res: Response, next: NextFunction) {
+    async endLog(err: any, req: any, res: Response, next: NextFunction) {
         let requester = 'unknown';
 
         // eslint-disable-next-line prefer-destructuring

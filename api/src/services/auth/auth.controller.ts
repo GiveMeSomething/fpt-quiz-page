@@ -3,7 +3,6 @@ import 'reflect-metadata';
 import { Service } from 'typedi';
 import { NextFunction, Request, Response } from 'express';
 
-import passport from 'passport';
 import AuthService from './auth.service';
 import UserService from '../user/user.service';
 
@@ -44,6 +43,8 @@ export default class AuthController {
     }
 
     async loginWithPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+        console.log(req.body);
+
         const { email, password } = req.body;
 
         try {
@@ -73,15 +74,13 @@ export default class AuthController {
 
     // This path is authenticate by passport
     // The req.user will contain payload info
-    async refreshToken(req: Request, res: Response, next: NextFunction) {
+    async refreshToken(req: any, res: Response, next: NextFunction) {
         try {
             if (!req.user) {
                 throw BadRequestException('User not existed');
             }
-
             // Get user info to issue new token
-            const user = { userId: req.user?._id, role: req.user.role };
-
+            const user = { userId: req.user._id, role: req.user.role };
             // Send back accessToken
             await this.sendTokenToClient(res, user);
         } catch (err) {

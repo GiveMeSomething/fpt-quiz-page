@@ -15,7 +15,6 @@ export default class QuizController {
 
     async getAllQuestion(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log(req.cookies['quiz-id']);
             const { questionList, answerToken } = await this.quizService.getFeaturedQuestions();
 
             // Expire in a day (temporarly)
