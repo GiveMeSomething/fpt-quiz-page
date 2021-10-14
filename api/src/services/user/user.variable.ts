@@ -4,7 +4,7 @@ export enum RoleEnum {
 }
 
 export type CurrentUserPayload = {
-    email: string;
-    userId: string;
-    role: string[];
-};
+    email: string
+    userId: string
+    role: string[]
+}

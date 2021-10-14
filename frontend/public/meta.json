@@ -1,0 +1,40 @@
+{
+    "name": "frontend",
+    "plugins": [
+        {
+            "name": "TailwindCSS",
+            "description": "A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.",
+            "url": "https://tailwindcss.com/docs"
+        },
+        {
+            "name": "SASS/SCSS",
+            "description": "Sass is a stylesheet language that’s compiled to CSS. It allows you to use variables, nested rules, mixins, functions, and more, all with a fully CSS-compatible syntax.",
+            "url": "https://sass-lang.com/documentation"
+        },
+        {
+            "name": "Axios",
+            "description": "Promise based HTTP client for the browser and node.js.",
+            "url": "https://github.com/axios/axios"
+        },
+        {
+            "name": "React Redux",
+            "description": "Redux helps you write applications that behave consistently, run in different environments (client, server, and native), and are easy to test.",
+            "url": "https://redux.js.org/introduction/getting-started"
+        },
+        {
+            "name": "ESLint",
+            "description": "A pluggable and configurable linter tool for identifying and reporting on patterns in JavaScript. Maintain your code quality with ease.",
+            "url": "https://eslint.org/docs/user-guide/getting-started"
+        },
+        {
+            "name": "Prettier",
+            "description": "An opinionated code formatter; Supports many languages; Integrates with most editors.",
+            "url": "https://prettier.io/docs/en/index.html"
+        },
+        {
+            "name": "lint-staged",
+            "description": " The concept of lint-staged is to run configured linter (or other) tasks on files that are staged in git.",
+            "url": "https://github.com/okonet/lint-staged"
+        }
+    ]
+}

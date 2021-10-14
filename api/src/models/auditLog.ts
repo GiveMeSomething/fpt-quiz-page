@@ -1,4 +1,4 @@
-import { Document, Model, model, Schema } from 'mongoose';
+import { Document, Model, model, Schema } from 'mongoose'
 
 export enum LogStatus {
     OK = 'OK',
@@ -6,16 +6,16 @@ export enum LogStatus {
 }
 
 export interface Log {
-    requestDate: string;
-    path: string;
-    action: string;
-    status: LogStatus;
+    requestDate: string
+    path: string
+    action: string
+    status: LogStatus
 }
 
 export interface AuditLog extends Document {
-    email: string;
-    log: Log;
-    message: string;
+    email: string
+    log: Log
+    message: string
 }
 
 const LogSchema: Schema<Log> = new Schema<Log>({
@@ -35,7 +35,7 @@ const LogSchema: Schema<Log> = new Schema<Log>({
         type: String,
         required: true,
     },
-});
+})
 
 export const AuditLogSchema: Schema<AuditLog> = new Schema<AuditLog>({
     email: {
@@ -46,6 +46,6 @@ export const AuditLogSchema: Schema<AuditLog> = new Schema<AuditLog>({
     message: {
         type: String,
     },
-});
+})
 
-export const AuditLogModel: Model<AuditLog> = model<AuditLog>('AuditLog', AuditLogSchema);
+export const AuditLogModel: Model<AuditLog> = model<AuditLog>('AuditLog', AuditLogSchema)

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "main.ts",
   "license": "MIT",
+  "private": "true",
   "scripts": {
     "start:dev": "nodemon ./src/app.ts",
     "lint": "eslint --cache --ext .js,.ts",
@@ -42,7 +43,7 @@
     "ts-node": "^10.2.1"
   },
   "prettier": {
-    "semi": true,
+    "semi": false,
     "singleQuote": true,
     "trailingComma": "all",
     "tabWidth": 4,

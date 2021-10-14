@@ -1,6 +1,6 @@
-export type Undefinable<T> = T | null;
+export type Undefinable<T> = T | null
 
 export type UserArgs = {
-    userId: string;
-    role: string;
-};
+    userId: string
+    role: string
+}

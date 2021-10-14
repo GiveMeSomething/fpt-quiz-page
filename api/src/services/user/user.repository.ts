@@ -1,37 +1,37 @@
-import 'reflect-metadata';
+import 'reflect-metadata'
 
-import { Model } from 'mongoose';
-import { Service } from 'typedi';
+import { Model } from 'mongoose'
+import { Service } from 'typedi'
 
-import { User, UserModel } from '../../models/user';
-import { Undefinable } from '../../@types/app.type';
-import { ServiceUnavailableException } from '../../utils/errorHandler/commonError';
+import { User, UserModel } from '../../models/user'
+import { Undefinable } from '../../@types/app.type'
+import { ServiceUnavailableException } from '../../utils/errorHandler/commonError'
 
 // Only write operation with database in here
 @Service()
 export default class UserRepository {
-    private readonly userModel: Model<User>;
+    private readonly userModel: Model<User>
 
     constructor() {
-        this.userModel = UserModel;
+        this.userModel = UserModel
     }
 
     async create(user: User): Promise<User> {
-        const initialUser: User = new this.userModel({ ...user });
-        const createdUser = await initialUser.save();
+        const initialUser: User = new this.userModel({ ...user })
+        const createdUser = await initialUser.save()
 
         if (!createdUser) {
-            throw ServiceUnavailableException('Cannot create new user');
+            throw ServiceUnavailableException('Cannot create new user')
         }
 
-        return createdUser;
+        return createdUser
     }
 
     async findById(userId: string): Promise<Undefinable<User>> {
-        return this.userModel.findOne({ _id: userId }).exec();
+        return this.userModel.findOne({ _id: userId }).exec()
     }
 
     async findByEmail(email: string): Promise<Undefinable<User>> {
-        return this.userModel.findOne({ email }).exec();
+        return this.userModel.findOne({ email }).exec()
     }
 }

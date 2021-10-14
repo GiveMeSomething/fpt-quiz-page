@@ -1,13 +1,13 @@
-import { Document, Model, model, Schema } from 'mongoose';
-import * as bcrypt from 'bcrypt';
-import { RoleEnum } from '../services/user/user.variable';
+import { Document, Model, model, Schema } from 'mongoose'
+import * as bcrypt from 'bcrypt'
+import { RoleEnum } from '../services/user/user.variable'
 
-const SALT: number = 10;
+const SALT: number = 10
 export interface User extends Document {
-    email: string;
-    password: string;
-    role: RoleEnum;
-    checkPassword: (password: string) => Promise<boolean>;
+    email: string
+    password: string
+    role: RoleEnum
+    checkPassword: (password: string) => Promise<boolean>
 }
 
 export const UserSchema: Schema<User> = new Schema<User>(
@@ -27,26 +27,26 @@ export const UserSchema: Schema<User> = new Schema<User>(
         },
     },
     { timestamps: true },
-);
+)
 
 UserSchema.methods.checkPassword = async function checkPassword(password: string) {
-    return bcrypt.compare(password, this.password);
-};
+    return bcrypt.compare(password, this.password)
+}
 
 UserSchema.pre('save', async function preSave(next: any) {
     // Save hash password into database
     if (this.isModified('password')) {
         try {
-            this.password = await bcrypt.hash(this.password, SALT);
+            this.password = await bcrypt.hash(this.password, SALT)
         } catch (err) {
-            next(err);
+            next(err)
         }
     }
 
     // Force register as normal user
-    this.role = RoleEnum.USER;
+    this.role = RoleEnum.USER
 
-    next();
-});
+    next()
+})
 
-export const UserModel: Model<User> = model<User>('User', UserSchema);
+export const UserModel: Model<User> = model<User>('User', UserSchema)
