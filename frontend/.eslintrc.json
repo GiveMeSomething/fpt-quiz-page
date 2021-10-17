@@ -23,11 +23,13 @@
     ],
     "plugins": ["react", "@typescript-eslint"],
     "rules": {
-        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "indent": "off",
+        "@typescript-eslint/indent": ["error", 4, { "SwitchCase": 1 }],
         "comma-dangle": "off",
         // note you must disable the base rule as it can report incorrect errors
         "no-use-before-define": "off",
         "@typescript-eslint/no-use-before-define": ["error"],
-        "space-before-function-paren": "off"
+        "space-before-function-paren": "off",
+        "react/display-name": "off"
     }
 }
