@@ -1,25 +1,26 @@
 {
-  "name": "fpt-quiz-page",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/GiveMeSomething/fpt-quiz-page.git",
-  "author": "MinhHT10",
-  "license": "MIT",
-  "devDependencies": {
-    "husky": "^7.0.0"
-  },
-  "workspaces": [
-    "frontend",
-    "api"
-  ],
-  "private": true,
-  "scripts": {
-    "start": "yarn frontend:start && yarn api:start",
-    "frontend:start": "yarn workspace frontend start:dev",
-    "api:start": "yarn workspace api start:dev",
-    "lint": "yarn frontend:lint && yarn api:lint",
-    "frontend:lint": "yarn workspace frontend lint && yarn workspace frontend format",
-    "api:lint" : "yarn workspace api lint && yarn workspace api format",
-    "prepare": "husky install"
-  }
+    "name": "fpt-quiz-page",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "https://github.com/GiveMeSomething/fpt-quiz-page.git",
+    "author": "MinhHT10",
+    "license": "MIT",
+    "devDependencies": {
+        "husky": "^7.0.0"
+    },
+    "workspaces": [
+        "frontend",
+        "api"
+    ],
+    "private": true,
+    "scripts": {
+        "start": "yarn frontend:start && yarn api:start",
+        "frontend:start": "yarn workspace frontend start:dev",
+        "api:start": "yarn workspace api start:dev",
+        "lint": "yarn frontend:lint && yarn api:lint",
+        "frontend:lint": "yarn workspace frontend lint && yarn workspace frontend format",
+        "api:lint": "yarn workspace api lint && yarn workspace api format",
+        "prepare": "husky install",
+        "lint:staged": "yarn workspace frontend lint:staged && yarn workspace api lint:staged"
+    }
 }
