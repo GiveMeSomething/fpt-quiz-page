@@ -8,7 +8,7 @@ interface AuthFormProps {
 }
 
 type FormValues = {
-    userEmail: string
+    userEmail: string,
     userPassword: string
 }
 
